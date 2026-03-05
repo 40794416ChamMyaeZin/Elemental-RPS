@@ -1,0 +1,123 @@
+/* ===== style/themes.css ===== */
+/* Dark mode theme overrides – activate by adding class "dark-theme" to body */
+
+/* Smooth theme transition */
+body, body * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Dark theme variables */
+body.dark-theme {
+    --primary: #a29bfe;        /* lighter purple for dark bg */
+    --primary-dark: #6c5ce7;
+    --secondary: #00cec9;
+    --danger: #ff7675;
+    --dark: #f5f6fa;           /* invert: dark bg -> light text */
+    --light: #2d3436;          /* invert: light bg -> dark elements */
+    --gray: #636e72;
+    --bg: #1e272e;             /* main background */
+    --text: #f5f6fa;
+    --card-bg: #2d3436;
+    --border: #4a5568;
+    --mana: #2980b9;            /* slightly darker for dark mode */
+    --mana-bg: #3498db;
+
+    /* Element colours – can be adjusted for dark mode if desired */
+    --fire: #e17055;
+    --water: #74b9ff;
+    --earth: #55efc4;
+    --air: #81ecec;
+    --lightning: #f1c40f;
+    --ice: #3498db;
+}
+
+/* Additional dark mode tweaks for specific elements (if needed) */
+body.dark-theme .btn {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-theme .clash-area {
+    border-color: var(--primary);
+    background: #2d3436;
+}
+
+body.dark-theme .leaderboard li {
+    border-bottom-color: var(--border);
+}
+
+body.dark-theme footer {
+    opacity: 0.6;
+}
+
+body.dark-theme .element-guide,
+body.dark-theme .leaderboard,
+body.dark-theme .hp-player,
+body.dark-theme .hp-computer,
+body.dark-theme .mana-container {
+    background: #2d3436;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+body.dark-theme .ref-item {
+    background: #1e272e;
+    color: #f5f6fa;
+}
+
+body.dark-theme .popup-content {
+    background: #2d3436;
+    color: #f5f6fa;
+}
+
+body.dark-theme .modal-content {
+    background: #2d3436;
+    color: #f5f6fa;
+}
+
+body.dark-theme .input-group input {
+    background: #1e272e;
+    color: #f5f6fa;
+    border-color: #4a5568;
+}
+
+body.dark-theme .input-group input:focus {
+    border-color: var(--primary);
+}
+
+body.dark-theme .login-links a {
+    color: var(--primary);
+}
+
+body.dark-theme .login-links a:hover {
+    color: #a29bfe;
+}
+
+body.dark-theme .demo-credentials {
+    background: rgba(162, 155, 254, 0.1);
+    border-color: var(--primary);
+}
+
+/* Theme toggle button styling (optional) */
+.theme-toggle {
+    background: transparent;
+    border: 1px solid currentColor;
+    color: inherit;
+    cursor: pointer;
+    padding: 0.3rem 0.8rem;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    margin-left: 1rem;
+}
+
+.theme-toggle:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Ensure the toggle icon contrasts well in dark mode */
+body.dark-theme .theme-toggle {
+    color: #f5f6fa;
+    border-color: #f5f6fa;
+}
+
+body.dark-theme .theme-toggle:hover {
+    background: rgba(255,255,255,0.1);
+}
