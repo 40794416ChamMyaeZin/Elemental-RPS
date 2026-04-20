@@ -1,5 +1,3 @@
-Add CSS for login form in main.css
-
 /* ===== style/main.css ===== */
 /* Global Variables & Reset */
 :root {
@@ -20,6 +18,8 @@ Add CSS for login form in main.css
     --text: #2d3436;
     --card-bg: #f0f0f0;
     --border: #dfe6e9;
+    --mana: #3498db;
+    --mana-bg: #2980b9;
 }
 
 * {
@@ -387,38 +387,45 @@ body {
 }
 
 /* Welcome Message Animation */
-.welcome-message {
+.temp-message {
     position: fixed;
     top: 20px;
-    right: 20px;
-    padding: 1rem 2rem;
-    background: var(--primary);
-    color: white;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
     border-radius: 50px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    animation: slideInRight 0.3s ease, slideOutRight 0.3s ease 2.7s forwards;
+    color: white;
+    font-weight: 600;
     z-index: 2000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    animation: slideDown 0.3s ease;
 }
 
-@keyframes slideInRight {
+.temp-message.success {
+    background: linear-gradient(135deg, #00b894, #00cec9);
+}
+
+.temp-message.info {
+    background: linear-gradient(135deg, #0984e3, #74b9ff);
+}
+
+.temp-message.error {
+    background: linear-gradient(135deg, #d63031, #e17055);
+}
+
+.temp-message.fade-out {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+@keyframes slideDown {
     from {
-        transform: translateX(100%);
+        top: -50px;
         opacity: 0;
     }
     to {
-        transform: translateX(0);
+        top: 20px;
         opacity: 1;
-    }
-}
-
-@keyframes slideOutRight {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(100%);
-        opacity: 0;
     }
 }
 
@@ -464,29 +471,31 @@ body {
     padding: 2rem;
 }
 
-/* HP Bars */
-.hp-container {
+/* Stats Container (HP + Mana) */
+.stats-container {
     display: flex;
     justify-content: space-between;
-    gap: 2rem;
+    gap: 1rem;
     margin-bottom: 2rem;
+    flex-wrap: wrap;
 }
 
-.hp-player, .hp-computer {
+.hp-player, .hp-computer, .mana-container {
     flex: 1;
+    min-width: 150px;
     background: var(--card-bg);
     border-radius: 10px;
     padding: 0.8rem;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.hp-label {
+.hp-label, .mana-label {
     font-weight: 600;
     display: block;
     margin-bottom: 0.3rem;
 }
 
-.hp-bar-bg {
+.hp-bar-bg, .mana-bar-bg {
     background: var(--gray);
     height: 20px;
     border-radius: 10px;
@@ -505,7 +514,16 @@ body {
     background: linear-gradient(90deg, #d63031, #e17055);
 }
 
-.hp-player span:last-child, .hp-computer span:last-child {
+.mana-bar-fill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #3498db, #2980b9);
+    transition: width 0.3s ease;
+}
+
+.hp-player span:last-child, 
+.hp-computer span:last-child, 
+.mana-container span:last-child {
     font-weight: 600;
 }
 
@@ -536,6 +554,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    transition: all 0.3s;
 }
 
 .move-btn i, .element-btn i {
@@ -555,7 +574,6 @@ body {
     box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.3);
 }
 
-/* Element-specific button styles */
 .element-btn[data-element="fire"] i { color: var(--fire); }
 .element-btn[data-element="water"] i { color: var(--water); }
 .element-btn[data-element="earth"] i { color: var(--earth); }
@@ -592,6 +610,30 @@ body {
 .element-btn[data-element="ice"].selected {
     background: var(--ice);
     border-color: #2980b9;
+}
+
+/* Begin Round Button */
+.round-control {
+    text-align: center;
+    margin: 1rem 0;
+}
+
+#begin-round-btn {
+    min-width: 200px;
+    font-size: 1.3rem;
+    padding: 1rem 2rem;
+}
+
+#begin-round-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--gray);
+    border-color: var(--border);
+}
+
+#begin-round-btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
 }
 
 /* Clash Area */
@@ -664,7 +706,6 @@ body {
     100% { transform: scale(1) rotate(0); }
 }
 
-/* Element-specific clash animations */
 .clash-lightning .player-clash,
 .clash-lightning .computer-clash {
     animation: lightning-flash 0.3s ease infinite;
@@ -696,47 +737,13 @@ body {
     50% { transform: scale(1.4); filter: brightness(1.5) drop-shadow(0 0 20px gold); }
 }
 
-/* Game Over Message */
-.game-over-message {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    backdrop-filter: blur(3px);
-}
-
-.game-over-content {
-    background: var(--bg);
-    padding: 2rem;
-    border-radius: 20px;
-    text-align: center;
-    animation: gameOverPop 0.3s ease;
-}
-
-@keyframes gameOverPop {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-
-.game-over-content h3 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    color: var(--primary);
-}
-
 /* Reset button */
 .reset-area {
     text-align: center;
     margin: 1rem 0 2rem;
 }
 
-/* Info panel (leaderboard + reference) */
+/* Info panel (leaderboard + guide) */
 .info-panel {
     display: flex;
     flex-wrap: wrap;
@@ -745,8 +752,8 @@ body {
 }
 
 .leaderboard {
-    flex: 2;
-    min-width: 250px;
+    flex: 1;
+    min-width: 200px;
     background: var(--card-bg);
     border-radius: 10px;
     padding: 1rem;
@@ -776,15 +783,41 @@ body {
     font-size: 0.9rem;
 }
 
-.element-reference {
+/* Element Guide (collapsible) */
+.element-guide {
     flex: 1;
-    min-width: 200px;
+    min-width: 250px;
     background: var(--card-bg);
     border-radius: 10px;
     padding: 1rem;
 }
 
-.element-reference h4 {
+#toggle-guide-btn {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+#toggle-guide-btn:hover {
+    background: var(--primary-dark);
+}
+
+.guide-content {
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+}
+
+.guide-content.hidden {
+    display: none;
+}
+
+.guide-content h4 {
     margin-bottom: 0.5rem;
     color: var(--dark);
 }
@@ -831,15 +864,67 @@ body {
     font-style: italic;
 }
 
-/* Element badge for messages */
-.element-badge {
-    display: inline-flex;
+/* Game Over Popup */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
     align-items: center;
-    gap: 0.2rem;
-    padding: 0.2rem 0.5rem;
-    background: var(--card-bg);
+    justify-content: center;
+    z-index: 1500;
+    animation: fadeIn 0.3s ease;
+}
+
+.popup.hidden {
+    display: none;
+}
+
+.popup-content {
+    background: var(--bg);
+    padding: 2rem;
     border-radius: 20px;
-    font-size: 0.9rem;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.popup-content h3 {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.popup-content p {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.popup-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.popup-buttons .btn {
+    min-width: 100px;
 }
 
 /* Footer */
@@ -850,6 +935,21 @@ footer {
     opacity: 0.8;
 }
 
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.element-pulse {
+    animation: elementPulse 0.3s ease;
+}
+
+@keyframes elementPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
 /* Responsive Design */
 @media (max-width: 600px) {
     .game-header {
@@ -858,9 +958,8 @@ footer {
         text-align: center;
     }
 
-    .hp-container {
+    .stats-container {
         flex-direction: column;
-        gap: 0.8rem;
     }
 
     .button-group {

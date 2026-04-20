@@ -3,692 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elemental RPS – Static Interface</title>
-    <!-- Font Awesome icons -->
+    <title>Elemental RPS – Clash of Six Elements</title>
+    <!-- Font Awesome for icons (free version) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        /* ===== main.css (condensed) ===== */
-        :root {
-            --primary: #6c5ce7;
-            --primary-dark: #5649c0;
-            --secondary: #00b894;
-            --danger: #d63031;
-            --dark: #2d3436;
-            --light: #f5f6fa;
-            --gray: #b2bec3;
-            --fire: #e17055;
-            --water: #0984e3;
-            --earth: #27ae60;
-            --air: #74b9ff;
-            --lightning: #f1c40f;
-            --ice: #3498db;
-            --bg: #ffffff;
-            --text: #2d3436;
-            --card-bg: #f0f0f0;
-            --border: #dfe6e9;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            color: var(--text);
-        }
-
-        .section {
-            display: none;
-            width: 100%;
-            max-width: 800px;
-            background: var(--bg);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-            margin: 1rem 0;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        /* Login */
-        .login-container {
-            padding: 2.5rem 2rem;
-            text-align: center;
-            background: var(--bg);
-            border-radius: 20px;
-            max-width: 450px;
-            margin: 0 auto;
-        }
-
-        .login-container h1 {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 0 var(--gray);
-        }
-
-        .login-container p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            color: var(--text);
-        }
-
-        .input-group {
-            margin-bottom: 1.5rem;
-            text-align: left;
-            width: 100%;
-            max-width: 350px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text);
-            font-weight: 600;
-        }
-
-        .input-group label i {
-            margin-right: 0.5rem;
-            color: var(--primary);
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 0.9rem 1rem;
-            font-size: 1rem;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            outline: none;
-            background: var(--bg);
-            color: var(--text);
-        }
-
-        .input-group input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
-        }
-
-        .checkbox-group {
-            margin-bottom: 1.5rem;
-            text-align: left;
-            width: 100%;
-            max-width: 350px;
-            margin-left: auto;
-            margin-right: auto;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--primary);
-        }
-
-        .btn {
-            padding: 0.8rem 2rem;
-            font-size: 1.1rem;
-            border: none;
-            border-radius: 50px;
-            cursor: default;
-            font-weight: 600;
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .btn-primary {
-            background: var(--primary);
-        }
-
-        .btn-secondary {
-            background: var(--secondary);
-        }
-
-        .login-links {
-            margin-top: 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 350px;
-            margin-left: auto;
-            margin-right: auto;
-            border-top: 1px solid var(--border);
-            padding-top: 1rem;
-        }
-
-        .login-links a {
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .demo-credentials {
-            margin-top: 1.5rem;
-            padding: 0.8rem;
-            background: rgba(108, 92, 231, 0.1);
-            border-radius: 10px;
-            border: 1px dashed var(--primary);
-        }
-
-        /* Modals */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: var(--bg);
-            margin: 10% auto;
-            padding: 2rem;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-            position: relative;
-        }
-
-        .close-modal {
-            position: absolute;
-            right: 1.5rem;
-            top: 1rem;
-            font-size: 2rem;
-            color: var(--gray);
-            cursor: default;
-        }
-
-        .modal-content h2 {
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-        }
-
-        .modal-content .btn {
-            width: 100%;
-            margin-bottom: 0.8rem;
-        }
-
-        /* Game Header */
-        .game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            background: var(--primary);
-            color: white;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        #greeting {
-            font-weight: 500;
-        }
-
-        #logout-btn {
-            background: transparent;
-            border: 1px solid white;
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 30px;
-        }
-
-        .theme-toggle {
-            background: transparent;
-            border: 1px solid white;
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 30px;
-        }
-
-        /* Game Area */
-        .game-area {
-            padding: 2rem;
-        }
-
-        .hp-container {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .hp-player, .hp-computer {
-            flex: 1;
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 0.8rem;
-        }
-
-        .hp-label {
-            font-weight: 600;
-            display: block;
-            margin-bottom: 0.3rem;
-        }
-
-        .hp-bar-bg {
-            background: var(--gray);
-            height: 20px;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 0.3rem;
-        }
-
-        .hp-bar-fill {
-            height: 100%;
-            width: 100%;
-            background: linear-gradient(90deg, #00b894, #00cec9);
-        }
-
-        .hp-computer .hp-bar-fill {
-            background: linear-gradient(90deg, #d63031, #e17055);
-        }
-
-        .hp-player span:last-child, .hp-computer span:last-child {
-            font-weight: 600;
-        }
-
-        .selection-panel {
-            margin-bottom: 2rem;
-        }
-
-        .selection-panel h3 {
-            margin-bottom: 0.8rem;
-            color: var(--dark);
-        }
-
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-        }
-
-        .move-btn, .element-btn {
-            flex: 1 1 auto;
-            min-width: 120px;
-            background: var(--light);
-            color: var(--dark);
-            border: 2px solid var(--border);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.8rem 1rem;
-            border-radius: 50px;
-            cursor: default;
-        }
-
-        .move-btn i, .element-btn i {
-            font-size: 1.2rem;
-        }
-
-        .element-btn[data-element="fire"] i { color: var(--fire); }
-        .element-btn[data-element="water"] i { color: var(--water); }
-        .element-btn[data-element="earth"] i { color: var(--earth); }
-        .element-btn[data-element="air"] i { color: var(--air); }
-        .element-btn[data-element="lightning"] i { color: var(--lightning); }
-        .element-btn[data-element="ice"] i { color: var(--ice); }
-
-        /* Clash Area */
-        .clash-area {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-            text-align: center;
-            border: 2px dashed var(--primary);
-        }
-
-        .clash-icons {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        .player-clash, .computer-clash {
-            display: flex;
-            gap: 0.5rem;
-            background: white;
-            padding: 1rem;
-            border-radius: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .vs {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--danger);
-            text-shadow: 2px 2px 0 var(--gray);
-        }
-
-        .clash-message {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .damage-message {
-            font-size: 1.2rem;
-            color: var(--danger);
-        }
-
-        .elemental-message {
-            font-size: 1rem;
-            color: var(--primary);
-            margin-top: 0.5rem;
-        }
-
-        .reset-area {
-            text-align: center;
-            margin: 1rem 0 2rem;
-        }
-
-        .info-panel {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .leaderboard, .element-reference {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 1rem;
-            flex: 1;
-        }
-
-        .leaderboard h3, .element-reference h4 {
-            margin-bottom: 0.8rem;
-            color: var(--dark);
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 0.3rem;
-        }
-
-        .leaderboard ul {
-            list-style: none;
-        }
-
-        .leaderboard li {
-            padding: 0.3rem 0;
-            border-bottom: 1px dotted var(--border);
-        }
-
-        .reference-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .ref-item {
-            font-size: 0.9rem;
-            background: white;
-            padding: 0.5rem;
-            border-radius: 5px;
-        }
-
-        .element-icon.fire { color: var(--fire); }
-        .element-icon.water { color: var(--water); }
-        .element-icon.earth { color: var(--earth); }
-        .element-icon.air { color: var(--air); }
-        .element-icon.lightning { color: var(--lightning); }
-        .element-icon.ice { color: var(--ice); }
-
-        footer {
-            color: white;
-            text-align: center;
-            margin-top: 1rem;
-            opacity: 0.8;
-        }
-
-        /* ===== themes.css (dark mode) ===== */
-        body.dark-theme {
-            --primary: #a29bfe;
-            --primary-dark: #6c5ce7;
-            --secondary: #00cec9;
-            --danger: #ff7675;
-            --dark: #f5f6fa;
-            --light: #2d3436;
-            --gray: #636e72;
-            --bg: #1e272e;
-            --text: #f5f6fa;
-            --card-bg: #2d3436;
-            --border: #4a5568;
-            --fire: #e17055;
-            --water: #74b9ff;
-            --earth: #55efc4;
-            --air: #81ecec;
-            --lightning: #f1c40f;
-            --ice: #3498db;
-        }
-
-        body.dark-theme .btn {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-        }
-
-        body.dark-theme .clash-area {
-            background: #2d3436;
-            border-color: var(--primary);
-        }
-
-        body.dark-theme .player-clash,
-        body.dark-theme .computer-clash {
-            background: #2d3436;
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-    </style>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style/main.css">
+    <link rel="stylesheet" href="style/themes.css">
 </head>
 <body>
-<!-- LOGIN SECTION (hidden) -->
-<section id="login-section" class="section">
-    <div class="login-container">
-        <h1>⚡ Elemental RPS ⚡</h1>
-        <p>Enter your credentials to begin the clash!</p>
-        <div class="input-group">
-            <label for="username-input"><i class="fas fa-user"></i> Username:</label>
-            <input type="text" id="username-input" placeholder="Enter your username" value="Player1" readonly>
+    <!-- LOGIN SECTION (visible by default) -->
+    <section id="login-section" class="section active">
+        <div class="login-container">
+            <h1>⚡ Elemental RPS ⚡</h1>
+            <p>Enter your credentials to begin the clash!</p>
+            
+            <div class="input-group">
+                <label for="username-input"><i class="fas fa-user"></i> Username:</label>
+                <input type="text" id="username-input" placeholder="Enter your username" maxlength="20" autocomplete="username">
+            </div>
+            
+            <div class="input-group">
+                <label for="password-input"><i class="fas fa-lock"></i> Password:</label>
+                <input type="password" id="password-input" placeholder="Enter your password" autocomplete="current-password">
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="remember-me" checked>
+                <label for="remember-me">Remember me</label>
+            </div>
+            
+            <button id="login-btn" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Enter the Arena</button>
+            
+            <div class="login-links">
+                <a href="#" id="register-link"><i class="fas fa-user-plus"></i> Register</a>
+                <a href="#" id="forgot-password-link"><i class="fas fa-question-circle"></i> Forgot password?</a>
+                <a href="#" id="terms-link"><i class="fas fa-file-contract"></i> Terms</a>
+            </div>
+            
+            <div class="demo-credentials">
+                <p><i class="fas fa-info-circle"></i> Demo: Use any username / password "demo123"</p>
+            </div>
         </div>
-        <div class="input-group">
-            <label for="password-input"><i class="fas fa-lock"></i> Password:</label>
-            <input type="password" id="password-input" placeholder="Enter your password" value="demo123" readonly>
-        </div>
-        <div class="checkbox-group">
-            <input type="checkbox" id="remember-me" checked disabled>
-            <label for="remember-me">Remember me</label>
-        </div>
-        <button class="btn btn-primary" disabled><i class="fas fa-sign-in-alt"></i> Enter the Arena</button>
-        <div class="login-links">
-            <a href="#">Register</a>
-            <a href="#">Forgot password?</a>
-        </div>
-        <div class="demo-credentials">
-            <p><i class="fas fa-info-circle"></i> Demo: Use any username / password "demo123"</p>
-        </div>
-    </div>
-</section>
+    </section>
 
-<!-- REGISTRATION MODAL (hidden) -->
-<div id="register-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h2><i class="fas fa-user-plus"></i> Create Account</h2>
-        <div class="input-group">
-            <label for="reg-username"><i class="fas fa-user"></i> Username:</label>
-            <input type="text" id="reg-username" placeholder="Choose a username" value="NewPlayer" readonly>
-        </div>
-        <div class="input-group">
-            <label for="reg-password"><i class="fas fa-lock"></i> Password:</label>
-            <input type="password" id="reg-password" placeholder="Min. 4 characters" value="1234" readonly>
-        </div>
-        <div class="input-group">
-            <label for="reg-confirm-password"><i class="fas fa-lock"></i> Confirm:</label>
-            <input type="password" id="reg-confirm-password" placeholder="Re-enter" value="1234" readonly>
-        </div>
-        <div class="checkbox-group">
-            <input type="checkbox" id="reg-terms" checked disabled>
-            <label for="reg-terms">I agree to the <a href="#">Terms</a></label>
-        </div>
-        <button class="btn btn-primary" disabled><i class="fas fa-check-circle"></i> Register</button>
-        <button class="btn btn-secondary" disabled><i class="fas fa-times"></i> Cancel</button>
-        <p style="text-align:center; margin-top:1rem;">Already have an account? <a href="#">Login here</a></p>
-    </div>
-</div>
-
-<!-- FORGOT PASSWORD MODAL (hidden) -->
-<div id="forgot-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h2><i class="fas fa-question-circle"></i> Reset Password</h2>
-        <div class="info-message">For demo, password will be reset to "demo123"</div>
-        <div class="input-group">
-            <label for="reset-username"><i class="fas fa-user"></i> Username:</label>
-            <input type="text" id="reset-username" placeholder="Enter your username" value="Player1" readonly>
-        </div>
-        <button class="btn btn-primary" disabled><i class="fas fa-redo-alt"></i> Reset</button>
-        <button class="btn btn-secondary" disabled><i class="fas fa-times"></i> Cancel</button>
-    </div>
-</div>
-
-<!-- TERMS MODAL (hidden) -->
-<div id="terms-modal" class="modal">
-    <div class="modal-content terms-content">
-        <span class="close-modal">&times;</span>
-        <h2><i class="fas fa-file-contract"></i> Terms of Service</h2>
-        <div style="max-height:300px; overflow-y:auto; margin-bottom:1rem;">
-            <h3>Elemental RPS - Terms</h3>
-            <p>Last updated: 2026</p>
-            <p>1. Acceptance of Terms<br>2. Game Rules<br>3. Fair Play<br>4. Account Responsibility<br>5. Data Collection<br>6. Modifications<br>7. Limitation of Liability</p>
-        </div>
-        <button class="btn btn-primary" disabled><i class="fas fa-check"></i> I Accept</button>
-    </div>
-</div>
-
-<!-- GAME SECTION (active) -->
-<section id="game-section" class="section active">
-    <header class="game-header">
-        <h2>⚡ Elemental RPS</h2>
-        <div class="user-info">
-            <span id="greeting">Welcome, <span id="display-username">Player1</span>!</span>
-            <button class="theme-toggle" disabled><i class="fas fa-moon"></i></button>
-            <button id="logout-btn" disabled><i class="fas fa-sign-out-alt"></i></button>
-        </div>
-    </header>
-
-    <div class="game-area">
-        <!-- HP Bars -->
-        <div class="hp-container">
-            <div class="hp-player">
-                <span class="hp-label"><i class="fas fa-user"></i> Player</span>
-                <div class="hp-bar-bg">
-                    <div class="hp-bar-fill" style="width: 80%;"></div>
+    <!-- REGISTRATION MODAL -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2><i class="fas fa-user-plus"></i> Create Account</h2>
+            
+            <div class="input-group">
+                <label for="reg-username"><i class="fas fa-user"></i> Username:</label>
+                <input type="text" id="reg-username" placeholder="Choose a username" maxlength="20" autocomplete="off">
+            </div>
+            
+            <div class="input-group">
+                <label for="reg-password"><i class="fas fa-lock"></i> Password:</label>
+                <input type="password" id="reg-password" placeholder="Choose a password (min. 4 characters)">
+                <!-- Password strength indicator -->
+                <div class="password-strength">
+                    <div class="password-strength-bar" id="password-strength-bar"></div>
                 </div>
-                <span>8/10</span>
+                <span class="password-strength-text" id="password-strength-text">Enter password</span>
             </div>
-            <div class="hp-computer">
-                <span class="hp-label"><i class="fas fa-robot"></i> Computer</span>
-                <div class="hp-bar-bg">
-                    <div class="hp-bar-fill" style="width: 60%;"></div>
-                </div>
-                <span>6/10</span>
+            
+            <div class="input-group">
+                <label for="reg-confirm-password"><i class="fas fa-lock"></i> Confirm Password:</label>
+                <input type="password" id="reg-confirm-password" placeholder="Re-enter password">
+                <span class="error-message" id="password-match-error"></span>
             </div>
-        </div>
-
-        <!-- Move Selection -->
-        <div class="selection-panel">
-            <h3><i class="fas fa-fist-raised"></i> Choose your move:</h3>
-            <div class="button-group">
-                <button class="btn move-btn selected" disabled><i class="fas fa-hand-rock"></i> Rock</button>
-                <button class="btn move-btn" disabled><i class="fas fa-hand-paper"></i> Paper</button>
-                <button class="btn move-btn" disabled><i class="fas fa-hand-scissors"></i> Scissors</button>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="reg-terms" checked>
+                <label for="reg-terms">I agree to the <a href="#" id="terms-link-reg">Terms of Service</a></label>
             </div>
-        </div>
-
-        <!-- Element Selection -->
-        <div class="selection-panel">
-            <h3><i class="fas fa-magic"></i> Choose your element:</h3>
-            <div class="button-group element-group">
-                <button class="btn element-btn selected" data-element="fire" disabled><i class="fas fa-fire"></i> Fire</button>
-                <button class="btn element-btn" data-element="water" disabled><i class="fas fa-water"></i> Water</button>
-                <button class="btn element-btn" data-element="earth" disabled><i class="fas fa-mountain"></i> Earth</button>
-                <button class="btn element-btn" data-element="air" disabled><i class="fas fa-wind"></i> Air</button>
-                <button class="btn element-btn" data-element="lightning" disabled><i class="fas fa-bolt"></i> Lightning</button>
-                <button class="btn element-btn" data-element="ice" disabled><i class="fas fa-snowflake"></i> Ice</button>
-            </div>
-        </div>
-
-        <!-- Clash Area (sample) -->
-        <div id="clash-area" class="clash-area">
-            <div class="clash-icons" id="clash-icons">
-                <span class="player-clash"><i class="fas fa-hand-rock"></i> <i class="fas fa-fire" style="color:#e17055;"></i></span>
-                <span class="vs">VS</span>
-                <span class="computer-clash"><i class="fas fa-hand-scissors"></i> <i class="fas fa-snowflake" style="color:#3498db;"></i></span>
-            </div>
-            <div class="clash-message">✨ VICTORY! ✨</div>
-            <div class="damage-message">💥 Dealt 4 damage!</div>
-            <div class="elemental-message"><i class="fas fa-info-circle"></i> Your Fire melts Ice! Strong!</div>
-        </div>
-
-        <!-- Reset Button -->
-        <div class="reset-area">
-            <button id="reset-btn" class="btn btn-secondary" disabled><i class="fas fa-redo-alt"></i> Reset Game</button>
-        </div>
-
-        <!-- Leaderboard & Element Guide -->
-        <div class="info-panel">
-            <div class="leaderboard">
-                <h3>🏆 Leaderboard</h3>
-                <ul id="leaderboard-list">
-                    <li>1. <i class="fas fa-trophy" style="color:#ffd700;"></i> Alex – 15 wins</li>
-                    <li>2. <i class="fas fa-trophy" style="color:#c0c0c0;"></i> Sam – 12 wins</li>
-                    <li>3. <i class="fas fa-trophy" style="color:#cd7f32;"></i> Jo – 10 wins</li>
-                    <li>4. <i class="fas fa-trophy" style="color:#95a5a6;"></i> Pat – 8 wins</li>
-                    <li>5. <i class="fas fa-trophy" style="color:#95a5a6;"></i> Chris – 7 wins</li>
-                </ul>
-            </div>
-            <div class="element-reference">
-                <h4><i class="fas fa-info-circle"></i> Element Strengths</h4>
-                <div class="reference-grid">
-                    <div class="ref-item"><span class="element-icon fire">🔥</span> Fire → <span class="element-icon air">🌪️</span> Air, <span class="element-icon ice">❄️</span> Ice</div>
-                    <div class="ref-item"><span class="element-icon water">💧</span> Water → <span class="element-icon fire">🔥</span> Fire</div>
-                    <div class="ref-item"><span class="element-icon earth">🌍</span> Earth → <span class="element-icon water">💧</span> Water</div>
-                    <div class="ref-item"><span class="element-icon air">🌪️</span> Air → <span class="element-icon earth">🌍</span> Earth</div>
-                    <div class="ref-item"><span class="element-icon lightning">⚡</span> Lightning → <span class="element-icon water">💧</span> Water, <span class="element-icon air">🌪️</span> Air</div>
-                    <div class="ref-item"><span class="element-icon ice">❄️</span> Ice → <span class="element-icon earth">🌍</span> Earth, <span class="element-icon water">💧</span> Water</div>
-                </div>
+            
+            <button id="register-btn" class="btn btn-primary"><i class="fas fa-check-circle"></i> Register</button>
+            <button id="cancel-register-btn" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</button>
+            
+            <div class="modal-footer">
+                <p>Already have an account? <a href="#" id="login-from-register">Login here</a></p>
             </div>
         </div>
     </div>
-</section>
 
-<footer>
-    <p>© 2026 Elemental RPS – Master the six elements!</p>
-</footer>
+    <!-- FORGOT PASSWORD MODAL -->
+    <div id="forgot-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2><i class="fas fa-question-circle"></i> Reset Password</h2>
+            
+            <div class="info-message">
+                <i class="fas fa-info-circle"></i> For demo purposes, your password will be reset to "demo123"
+            </div>
+            
+            <div class="input-group">
+                <label for="reset-username"><i class="fas fa-user"></i> Username:</label>
+                <input type="text" id="reset-username" placeholder="Enter your username" autocomplete="off">
+            </div>
+            
+            <button id="reset-password-btn" class="btn btn-primary"><i class="fas fa-redo-alt"></i> Reset Password</button>
+            <button id="cancel-reset-btn" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</button>
+            
+            <div class="modal-footer">
+                <p>Remember your password? <a href="#" id="login-from-reset">Login</a></p>
+            </div>
+        </div>
+    </div>
 
-<!-- To test dark mode, uncomment the next line -->
+    <!-- TERMS OF SERVICE MODAL -->
+    <div id="terms-modal" class="modal">
+        <div class="modal-content terms-content">
+            <span class="close-modal">&times;</span>
+            <h2><i class="fas fa-file-contract"></i> Terms of Service</h2>
+            
+            <div class="terms-text">
+                <h3>Elemental RPS - Terms of Service</h3>
+                <p>Last updated: 2026</p>
+                
+                <h4>1. Acceptance of Terms</h4>
+                <p>By accessing and playing Elemental RPS, you agree to be bound by these Terms of Service.</p>
+                
+                <h4>2. Game Rules</h4>
+                <p>Players must choose both a move (Rock, Paper, Scissors) and an element (Fire, Water, Earth, Air, Lightning, Ice). The game follows standard RPS rules with elemental modifiers and mana costs.</p>
+                
+                <h4>3. Fair Play</h4>
+                <p>Players are expected to play fairly. Cheating, exploiting bugs, or using automated scripts is prohibited.</p>
+                
+                <h4>4. Account Responsibility</h4>
+                <p>You are responsible for maintaining the confidentiality of your account credentials.</p>
+                
+                <h4>5. Data Collection</h4>
+                <p>We store your username, win count, and preferences locally in your browser for leaderboard and personalization purposes.</p>
+                
+                <h4>6. Modifications</h4>
+                <p>We reserve the right to modify or discontinue the game at any time.</p>
+                
+                <h4>7. Limitation of Liability</h4>
+                <p>Elemental RPS is provided "as is" without warranties of any kind.</p>
+            </div>
+            
+            <button id="accept-terms-btn" class="btn btn-primary"><i class="fas fa-check"></i> I Accept</button>
+        </div>
+    </div>
+
+    <!-- GAME OVER POPUP (hidden initially) -->
+    <div id="gameover-popup" class="popup hidden">
+        <div class="popup-content">
+            <h3>Game Over!</h3>
+            <p id="gameover-message">Would you like to continue?</p>
+            <div class="popup-buttons">
+                <button id="gameover-yes" class="btn btn-primary"><i class="fas fa-check"></i> Yes</button>
+                <button id="gameover-no" class="btn btn-secondary"><i class="fas fa-times"></i> No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GAME SECTION (hidden initially) -->
+    <section id="game-section" class="section">
+        <!-- Header with user greeting, theme toggle, and logout -->
+        <header class="game-header">
+            <h2>⚡ Elemental RPS</h2>
+            <div class="user-info">
+                <span id="greeting">Welcome, <span id="display-username"></span>!</span>
+                <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
+                <button id="logout-btn" class="btn btn-small" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </header>
+
+        <!-- Main game area -->
+        <div class="game-area">
+            <!-- HP and Mana Bars -->
+            <div class="stats-container">
+                <div class="hp-player">
+                    <span class="hp-label"><i class="fas fa-user"></i> Player</span>
+                    <div class="hp-bar-bg">
+                        <div id="player-hp-bar" class="hp-bar-fill" style="width: 100%;"></div>
+                    </div>
+                    <span id="player-hp-text">30/30</span>
+                </div>
+                <div class="mana-container">
+                    <span class="mana-label"><i class="fas fa-bolt"></i> Mana</span>
+                    <div class="mana-bar-bg">
+                        <div id="player-mana-bar" class="mana-bar-fill" style="width: 100%;"></div>
+                    </div>
+                    <span id="player-mana-text">20/20</span>
+                </div>
+                <div class="hp-computer">
+                    <span class="hp-label"><i class="fas fa-robot"></i> Computer</span>
+                    <div class="hp-bar-bg">
+                        <div id="computer-hp-bar" class="hp-bar-fill" style="width: 100%;"></div>
+                    </div>
+                    <span id="computer-hp-text">30/30</span>
+                </div>
+            </div>
+
+            <!-- Move Selection (RPS) -->
+            <div class="selection-panel">
+                <h3><i class="fas fa-fist-raised"></i> Choose your move:</h3>
+                <div class="button-group">
+                    <button class="btn move-btn" data-move="rock"><i class="fas fa-hand-rock"></i> Rock</button>
+                    <button class="btn move-btn" data-move="paper"><i class="fas fa-hand-paper"></i> Paper</button>
+                    <button class="btn move-btn" data-move="scissors"><i class="fas fa-hand-scissors"></i> Scissors</button>
+                </div>
+            </div>
+
+            <!-- Element Selection (6 elements) -->
+            <div class="selection-panel">
+                <h3><i class="fas fa-magic"></i> Choose your element (cost):</h3>
+                <div class="button-group element-group">
+                    <button class="btn element-btn" data-element="fire" data-cost="3"><i class="fas fa-fire"></i> Fire (3)</button>
+                    <button class="btn element-btn" data-element="water" data-cost="2"><i class="fas fa-water"></i> Water (2)</button>
+                    <button class="btn element-btn" data-element="earth" data-cost="4"><i class="fas fa-mountain"></i> Earth (4)</button>
+                    <button class="btn element-btn" data-element="air" data-cost="2"><i class="fas fa-wind"></i> Air (2)</button>
+                    <button class="btn element-btn" data-element="lightning" data-cost="5"><i class="fas fa-bolt"></i> Lightning (5)</button>
+                    <button class="btn element-btn" data-element="ice" data-cost="3"><i class="fas fa-snowflake"></i> Ice (3)</button>
+                </div>
+            </div>
+
+            <!-- Begin Round Button -->
+            <div class="round-control">
+                <button id="begin-round-btn" class="btn btn-primary" disabled><i class="fas fa-play"></i> Begin Round</button>
+            </div>
+
+            <!-- Clash Result Area (animated) -->
+            <div id="clash-area" class="clash-area">
+                <div class="clash-icons" id="clash-icons">
+                    <!-- Dynamically filled by JS -->
+                    <span class="player-clash"></span>
+                    <span class="vs">VS</span>
+                    <span class="computer-clash"></span>
+                </div>
+                <div id="clash-message" class="clash-message">Make your choices!</div>
+                <div id="damage-message" class="damage-message"></div>
+                <div id="elemental-message" class="elemental-message"></div>
+            </div>
+
+            <!-- Reset Button -->
+            <div class="reset-area">
+                <button id="reset-btn" class="btn btn-secondary"><i class="fas fa-redo-alt"></i> Reset Game</button>
+            </div>
+
+            <!-- Collapsible Element Guide -->
+            <div class="info-panel">
+                <div class="leaderboard">
+                    <h3>🏆 Leaderboard</h3>
+                    <ul id="leaderboard-list">
+                        <li>1. </li>
+                        <li>2. </li>
+                        <li>3. </li>
+                        <li>4. </li>
+                        <li>5. </li>
+                    </ul>
+                </div>
+                <div class="element-guide">
+                    <button id="toggle-guide-btn" class="btn btn-small"><i class="fas fa-chevron-down"></i> Show Element Guide</button>
+                    <div id="element-guide-content" class="guide-content hidden">
+                        <h4><i class="fas fa-info-circle"></i> Element Strengths & Costs</h4>
+                        <div class="reference-grid">
+                            <div class="ref-item"><span class="element-icon fire">🔥</span> Fire (3) → <span class="element-icon air">🌪️</span> Air, <span class="element-icon ice">❄️</span> Ice</div>
+                            <div class="ref-item"><span class="element-icon water">💧</span> Water (2) → <span class="element-icon fire">🔥</span> Fire</div>
+                            <div class="ref-item"><span class="element-icon earth">🌍</span> Earth (4) → <span class="element-icon water">💧</span> Water</div>
+                            <div class="ref-item"><span class="element-icon air">🌪️</span> Air (2) → <span class="element-icon earth">🌍</span> Earth</div>
+                            <div class="ref-item"><span class="element-icon lightning">⚡</span> Lightning (5) → <span class="element-icon water">💧</span> Water, <span class="element-icon air">🌪️</span> Air</div>
+                            <div class="ref-item"><span class="element-icon ice">❄️</span> Ice (3) → <span class="element-icon earth">🌍</span> Earth, <span class="element-icon water">💧</span> Water</div>
+                        </div>
+                        <p class="reference-note"><i class="fas fa-star"></i> Some combinations have special combo effects!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (common) -->
+    <footer>
+        <p>© 2026 Elemental RPS – Master the six elements!</p>
+    </footer>
+
+    <!-- JavaScript files -->
+    <script src="script/storage.js"></script>
+    <script src="script/game.js"></script>
+    <script src="script/ui.js"></script>
+    <script src="script/main.js"></script>
 </body>
 </html>
