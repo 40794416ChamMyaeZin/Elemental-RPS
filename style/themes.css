@@ -19,10 +19,10 @@ body.dark-theme {
     --text: #f5f6fa;
     --card-bg: #2d3436;
     --border: #4a5568;
-    --mana: #2980b9;            /* slightly darker for dark mode */
+    --mana: #2980b9;
     --mana-bg: #3498db;
 
-    /* Element colours – can be adjusted for dark mode if desired */
+    /* Element colours */
     --fire: #e17055;
     --water: #74b9ff;
     --earth: #55efc4;
@@ -31,7 +31,7 @@ body.dark-theme {
     --ice: #3498db;
 }
 
-/* Additional dark mode tweaks for specific elements (if needed) */
+/* Global dark mode overrides */
 body.dark-theme .btn {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
 }
@@ -39,6 +39,14 @@ body.dark-theme .btn {
 body.dark-theme .clash-area {
     border-color: var(--primary);
     background: #2d3436;
+}
+
+/* Fix clash area icons visibility */
+body.dark-theme .player-clash,
+body.dark-theme .computer-clash {
+    background: #2d3436;
+    color: var(--text);
+    border: 1px solid var(--border);
 }
 
 body.dark-theme .leaderboard li {
@@ -49,6 +57,7 @@ body.dark-theme footer {
     opacity: 0.6;
 }
 
+/* Cards and containers */
 body.dark-theme .element-guide,
 body.dark-theme .leaderboard,
 body.dark-theme .hp-player,
@@ -60,43 +69,39 @@ body.dark-theme .mana-container {
 
 body.dark-theme .ref-item {
     background: #1e272e;
-    color: #f5f6fa;
+    color: var(--text);
 }
 
-body.dark-theme .popup-content {
-    background: #2d3436;
-    color: #f5f6fa;
-}
-
+/* Popups and modals */
+body.dark-theme .popup-content,
 body.dark-theme .modal-content {
     background: #2d3436;
-    color: #f5f6fa;
+    color: var(--text);
 }
 
+/* Form inputs */
 body.dark-theme .input-group input {
     background: #1e272e;
-    color: #f5f6fa;
+    color: var(--text);
     border-color: #4a5568;
 }
-
 body.dark-theme .input-group input:focus {
     border-color: var(--primary);
 }
 
+/* Login links and demo box */
 body.dark-theme .login-links a {
     color: var(--primary);
 }
-
 body.dark-theme .login-links a:hover {
     color: #a29bfe;
 }
-
 body.dark-theme .demo-credentials {
     background: rgba(162, 155, 254, 0.1);
     border-color: var(--primary);
 }
 
-/* Theme toggle button styling (optional) */
+/* Theme toggle button */
 .theme-toggle {
     background: transparent;
     border: 1px solid currentColor;
@@ -107,17 +112,24 @@ body.dark-theme .demo-credentials {
     font-size: 0.9rem;
     margin-left: 1rem;
 }
-
 .theme-toggle:hover {
     background: rgba(255,255,255,0.2);
 }
-
-/* Ensure the toggle icon contrasts well in dark mode */
 body.dark-theme .theme-toggle {
     color: #f5f6fa;
     border-color: #f5f6fa;
 }
-
 body.dark-theme .theme-toggle:hover {
     background: rgba(255,255,255,0.1);
+}
+
+/* Ensure mana bar fill contrasts */
+body.dark-theme .mana-bar-fill {
+    background: linear-gradient(90deg, #2980b9, #3498db);
+}
+
+/* Begin Round button disabled state */
+body.dark-theme #begin-round-btn:disabled {
+    background: var(--gray);
+    opacity: 0.6;
 }

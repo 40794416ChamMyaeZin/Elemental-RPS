@@ -1,14 +1,16 @@
 // ===== scripts/main.js =====
 // Initialisation, login/logout, event listeners with password support
 // Updated for mana system, begin round button, game over popup, element guide toggle
+// Now also updates computer mana bar
+// FIX: Element button opacity updates after every mana change (round, reset, selection)
 
 /* global
    loginUser, registerUser, resetPassword, logoutUser,
    getRememberMe, getCurrentUser, setPlayerMove, setPlayerElement,
-   resetGame, updateHPBars, updateManaBar, clearClashArea, updateLeaderboardUI,
+   resetGame, updateHPBars, updateManaBar, updateComputerManaBar, clearClashArea, updateLeaderboardUI,
    animateElementSelection, resolveRound, isGameOver, getPlayerHP,
    showGameOverPopup, hideGameOverPopup, toggleElementGuide,
-   hasEnoughMana, getElementCost
+   hasEnoughMana, getElementCost, getPlayerMana
 */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -77,15 +79,46 @@ document.addEventListener('DOMContentLoaded', () => {
         if (beginRoundBtn) beginRoundBtn.disabled = true;
     }
 
+    // FIX: Update element button opacity based on current mana
+    function updateElementButtonsManaStyle() {
+        elementButtons.forEach(btn => {
+            const element = btn.dataset.element;
+            if (typeof hasEnoughMana === 'function' && !hasEnoughMana(element)) {
+                btn.style.opacity = '0.6';
+                btn.title = 'Not enough mana!';
+            } else {
+                btn.style.opacity = '1';
+                btn.title = '';
+            }
+        });
+    }
+
+    function updateBeginRoundButton() {
+        const selectedMove = document.querySelector('.move-btn.selected');
+        const selectedElement = document.querySelector('.element-btn.selected');
+        if (!selectedMove || !selectedElement) {
+            beginRoundBtn.disabled = true;
+            return;
+        }
+        const element = selectedElement.dataset.element;
+        if (typeof hasEnoughMana === 'function' && hasEnoughMana(element)) {
+            beginRoundBtn.disabled = false;
+        } else {
+            beginRoundBtn.disabled = true;
+        }
+    }
+
     function resetUIAndGame() {
         if (typeof resetGame === 'function') resetGame();
         clearSelections();
         if (typeof updateHPBars === 'function') updateHPBars();
         if (typeof updateManaBar === 'function') updateManaBar();
+        if (typeof updateComputerManaBar === 'function') updateComputerManaBar();
         if (typeof clearClashArea === 'function') clearClashArea();
         moveButtons.forEach(btn => btn.disabled = false);
         elementButtons.forEach(btn => btn.disabled = false);
-        if (beginRoundBtn) beginRoundBtn.disabled = true;
+        updateElementButtonsManaStyle();   // <-- Update opacity after reset
+        updateBeginRoundButton();
         roundInProgress = false;
         if (typeof hideGameOverPopup === 'function') hideGameOverPopup();
     }
@@ -101,14 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2000);
     }
 
-    function showModal(modal) {
-        if (modal) modal.style.display = 'block';
-    }
-
-    function hideModal(modal) {
-        if (modal) modal.style.display = 'none';
-    }
-
+    function showModal(modal) { if (modal) modal.style.display = 'block'; }
+    function hideModal(modal) { if (modal) modal.style.display = 'none'; }
     function clearModalInputs() {
         if (regUsername) regUsername.value = '';
         if (regPassword) regPassword.value = '';
@@ -116,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (resetUsername) resetUsername.value = '';
     }
 
-    // ===== Login / Register / Logout (unchanged from previous) =====
+    // ===== Authentication Functions =====
     function login(username, password, remember = true) {
         if (!username?.trim()) {
             showTemporaryMessage('Please enter your username!', 'error');
@@ -222,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showTemporaryMessage('Come back soon! 👋', 'info');
     }
 
-    // ===== Round Execution (triggered by Begin Round button) =====
+    // ===== Round Execution =====
     function startRound() {
         if (roundInProgress) return;
 
@@ -237,7 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const move = selectedMove.dataset.move;
         const element = selectedElement.dataset.element;
 
-        // Check mana
         if (typeof hasEnoughMana === 'function' && !hasEnoughMana(element)) {
             showTemporaryMessage('Not enough mana!', 'error');
             return;
@@ -248,16 +274,13 @@ document.addEventListener('DOMContentLoaded', () => {
         moveButtons.forEach(btn => btn.disabled = true);
         elementButtons.forEach(btn => btn.disabled = true);
 
-        // Set player choices
         if (typeof setPlayerMove === 'function') setPlayerMove(move);
         if (typeof setPlayerElement === 'function') setPlayerElement(element);
 
-        // Small delay for drama
         setTimeout(() => {
             if (typeof resolveRound === 'function') {
                 const result = resolveRound();
 
-                // Update UI
                 if (typeof updateClashArea === 'function') {
                     updateClashArea(
                         move,
@@ -272,26 +295,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 if (typeof updateHPBars === 'function') updateHPBars();
                 if (typeof updateManaBar === 'function') updateManaBar();
+                if (typeof updateComputerManaBar === 'function') updateComputerManaBar();
 
-                // Check game over
+                updateElementButtonsManaStyle();   // <-- Update opacity after mana changes
+
                 if (typeof isGameOver === 'function' && isGameOver()) {
                     const playerHP = typeof getPlayerHP === 'function' ? getPlayerHP() : 0;
                     const winner = playerHP <= 0 ? 'computer' : 'player';
-                    if (winner === 'player' && typeof incrementPlayerWins === 'function') {
-                        incrementPlayerWins();
-                        if (typeof updateLeaderboardUI === 'function') updateLeaderboardUI();
-                    }
+                    if (typeof updateLeaderboardUI === 'function') updateLeaderboardUI();
                     if (typeof showGameOverPopup === 'function') showGameOverPopup(winner);
-                    // Buttons remain disabled until popup action
                 } else {
-                    // Re-enable for next round
                     moveButtons.forEach(btn => btn.disabled = false);
                     elementButtons.forEach(btn => btn.disabled = false);
-                    // Clear selections? Or keep them? Let's keep them for convenience.
-                    // But we should disable begin round until new selections?
-                    // Actually after round, selections are still there; we can allow another round with same choices.
-                    // However mana may be insufficient now; begin round should be re-enabled but will check mana.
-                    beginRoundBtn.disabled = false;
+                    updateBeginRoundButton();
                     roundInProgress = false;
                 }
             }
@@ -299,8 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===== Event Listeners =====
-
-    // Login
     loginBtn.addEventListener('click', () => {
         const remember = rememberMeCheckbox ? rememberMeCheckbox.checked : true;
         login(usernameInput.value, passwordInput.value, remember);
@@ -314,22 +328,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Logout
     logoutBtn.addEventListener('click', logout);
 
-    // Move selection – just highlight, no auto-round
     moveButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             if (roundInProgress) return;
             moveButtons.forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
-            // Enable begin round if both selected
-            const selectedElement = document.querySelector('.element-btn.selected');
-            if (selectedElement) beginRoundBtn.disabled = false;
+            updateBeginRoundButton();
         });
     });
 
-    // Element selection – highlight and check mana
     elementButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             if (roundInProgress) return;
@@ -338,38 +347,24 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof animateElementSelection === 'function') {
                 animateElementSelection(btn.dataset.element);
             }
-            // Check if enough mana (visual cue)
-            const element = btn.dataset.element;
-            if (typeof hasEnoughMana === 'function' && !hasEnoughMana(element)) {
-                btn.style.opacity = '0.6';
-                btn.title = 'Not enough mana!';
-            } else {
-                btn.style.opacity = '1';
-                btn.title = '';
-            }
-            // Enable begin round if move also selected
-            const selectedMove = document.querySelector('.move-btn.selected');
-            if (selectedMove) beginRoundBtn.disabled = false;
+            updateElementButtonsManaStyle();   // <-- Update opacity on element selection (in case mana changed earlier)
+            updateBeginRoundButton();
         });
     });
 
-    // Begin Round button
     beginRoundBtn.addEventListener('click', startRound);
 
-    // Reset button
     resetBtn.addEventListener('click', () => {
         resetUIAndGame();
         showTemporaryMessage('Game reset! Ready for battle! ⚔️', 'info');
     });
 
-    // Game Over popup buttons
     if (gameOverYes) {
         gameOverYes.addEventListener('click', () => {
             resetUIAndGame();
-            // Re-enable buttons
             moveButtons.forEach(btn => btn.disabled = false);
             elementButtons.forEach(btn => btn.disabled = false);
-            beginRoundBtn.disabled = true; // until selections
+            updateBeginRoundButton();
             roundInProgress = false;
             hideGameOverPopup();
         });
@@ -377,11 +372,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (gameOverNo) {
         gameOverNo.addEventListener('click', () => {
             hideGameOverPopup();
-            logout(); // or just return to login? Logout is fine.
+            logout();
         });
     }
 
-    // Toggle element guide
     if (toggleGuideBtn) {
         toggleGuideBtn.addEventListener('click', toggleElementGuide);
     }
@@ -412,7 +406,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Close modal buttons
     closeModalButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             hideModal(registerModal);
@@ -440,16 +433,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Register button
     if (registerBtn) {
         registerBtn.addEventListener('click', register);
     }
-    // Reset password button
     if (resetPasswordBtn) {
         resetPasswordBtn.addEventListener('click', resetPassword);
     }
 
-    // Close modals when clicking outside
     window.addEventListener('click', (e) => {
         if (e.target === registerModal) {
             hideModal(registerModal);
@@ -504,7 +494,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (key === 'Enter' && !beginRoundBtn.disabled) beginRoundBtn?.click();
     });
 
-    // ===== Auto-login check =====
     function checkAutoLogin() {
         const remember = typeof getRememberMe === 'function' ? getRememberMe() : false;
         if (remember) {
@@ -517,7 +506,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ===== Initialisation =====
     checkAutoLogin();
     if (typeof updateLeaderboardUI === 'function') updateLeaderboardUI();
 });

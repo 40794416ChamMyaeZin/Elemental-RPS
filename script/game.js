@@ -1,19 +1,20 @@
 // ===== scripts/game.js =====
-// Core game logic: RPS, elements, damage, HP, mana, combos
+// Core game logic: RPS, elements, damage, HP, mana for both players
 
 // ===== Game State =====
 let playerHP = 30;
 let computerHP = 30;
 let playerMana = 20;
+let computerMana = 20;
 const maxMana = 20;
-const manaRegen = 2;
-let playerMove = null;      // 'rock', 'paper', 'scissors'
-let playerElement = null;   // one of the six elements
+const manaRegen = 3;
+
+let playerMove = null;
+let playerElement = null;
 let computerMove = null;
 let computerElement = null;
-let lastPlayerElement = null; // for combos
+let lastPlayerElement = null;
 
-// Win tracking (for leaderboard)
 let playerWins = 0;
 
 // ===== Element Costs =====
@@ -27,7 +28,6 @@ const elementCosts = {
 };
 
 // ===== Combo Definitions =====
-// Format: [element1, element2] => { name, damageBonus, manaRefund, selfHeal }
 const combos = [
     { elements: ['fire', 'lightning'], name: 'Firestorm', damageBonus: 2, manaRefund: 1, selfHeal: 0 },
     { elements: ['water', 'ice'], name: 'Frost', damageBonus: 1, manaRefund: 0, selfHeal: 0 },
@@ -46,7 +46,7 @@ const rpsWinMap = {
     paper: 'rock'
 };
 
-// ===== Elemental Effectiveness Matrix =====
+// ===== Elemental Effectiveness =====
 const elementStrongAgainst = {
     fire: 'air',
     air: 'earth',
@@ -67,87 +67,64 @@ const elementWeakAgainst = {
 
 // ===== Helper Functions =====
 
-/**
- * Get random element from the six
- */
 function getRandomElement() {
     const elements = ['fire', 'water', 'earth', 'air', 'lightning', 'ice'];
     return elements[Math.floor(Math.random() * elements.length)];
 }
 
-/**
- * Get random move from RPS
- */
 function getRandomMove() {
     const moves = ['rock', 'paper', 'scissors'];
     return moves[Math.floor(Math.random() * moves.length)];
 }
 
-/**
- * Determine RPS winner: returns 'player', 'computer', or 'tie'
- */
-function getRPSWinner(playerMove, computerMove) {
-    if (playerMove === computerMove) return 'tie';
-    if (rpsWinMap[playerMove] === computerMove) return 'player';
-    return 'computer';
+function getRPSWinner(pMove, cMove) {
+    if (pMove === cMove) return 'tie';
+    return rpsWinMap[pMove] === cMove ? 'player' : 'computer';
 }
 
-/**
- * Get elemental damage multiplier
- */
-function getElementMultiplier(attackerElement, defenderElement) {
-    // Super effective (2.0)
-    if (elementStrongAgainst[attackerElement] === defenderElement) {
-        return 2.0;
-    }
-    // Secondary strong (1.5)
-    if (attackerElement === 'lightning' && defenderElement === 'air') return 1.5;
-    if (attackerElement === 'ice' && defenderElement === 'water') return 1.5;
-    if (attackerElement === 'fire' && defenderElement === 'ice') return 1.5;
-    if (attackerElement === 'earth' && defenderElement === 'lightning') return 1.5;
-    // Weak (0.5)
-    if (elementWeakAgainst[attackerElement] === defenderElement) {
-        return 0.5;
-    }
-    // Very weak (0.25)
-    if (attackerElement === 'water' && defenderElement === 'lightning') return 0.25;
-    if (attackerElement === 'ice' && defenderElement === 'fire') return 0.25;
-    if (attackerElement === 'air' && defenderElement === 'earth') return 0.25;
+function getElementMultiplier(attacker, defender) {
+    if (!attacker || !defender) return 1.0;
+    if (elementStrongAgainst[attacker] === defender) return 2.0;
+    if (attacker === 'lightning' && defender === 'air') return 1.5;
+    if (attacker === 'ice' && defender === 'water') return 1.5;
+    if (attacker === 'fire' && defender === 'ice') return 1.5;
+    if (attacker === 'earth' && defender === 'lightning') return 1.5;
+    if (elementWeakAgainst[attacker] === defender) return 0.5;
+    if (attacker === 'water' && defender === 'lightning') return 0.25;
+    if (attacker === 'ice' && defender === 'fire') return 0.25;
+    if (attacker === 'air' && defender === 'earth') return 0.25;
     return 1.0;
 }
 
-/**
- * Calculate base damage for a round (before combo bonus)
- */
-function calculateBaseDamage(winner, playerElement, computerElement) {
-    const baseDamage = 2;
+function calculateBaseDamage(winner, pElem, cElem) {
+    const base = 2;
     if (winner === 'tie') return 0;
     if (winner === 'player') {
-        return Math.round(baseDamage * getElementMultiplier(playerElement, computerElement));
+        return Math.round(base * getElementMultiplier(pElem, cElem));
     } else {
-        return Math.round(baseDamage * getElementMultiplier(computerElement, playerElement));
+        return Math.round(base * getElementMultiplier(cElem, pElem));
     }
 }
 
-/**
- * Check for combo and return bonus object
- */
-function checkCombo(prevElement, currentElement) {
-    if (!prevElement) return null;
+function checkCombo(prevElem, currentElem) {
+    if (!prevElem) return null;
     for (let combo of combos) {
-        if ((combo.elements[0] === prevElement && combo.elements[1] === currentElement) ||
-            (combo.elements[0] === currentElement && combo.elements[1] === prevElement)) {
+        if ((combo.elements[0] === prevElem && combo.elements[1] === currentElem) ||
+            (combo.elements[0] === currentElem && combo.elements[1] === prevElem)) {
             return combo;
         }
     }
     return null;
 }
 
-/**
- * Resolve a round: called when player clicks Begin Round
- * Assumes playerMove and playerElement are set.
- * Returns result object with all details.
- */
+// Computer chooses an affordable element
+function getComputerElementWithMana() {
+    const affordable = Object.keys(elementCosts).filter(e => elementCosts[e] <= computerMana);
+    if (affordable.length === 0) return null;
+    const randomIndex = Math.floor(Math.random() * affordable.length);
+    return affordable[randomIndex];
+}
+
 function resolveRound() {
     if (!playerMove || !playerElement) {
         return {
@@ -160,35 +137,38 @@ function resolveRound() {
         };
     }
 
-    // Check mana
-    const cost = elementCosts[playerElement];
-    if (playerMana < cost) {
+    const playerCost = elementCosts[playerElement];
+    if (playerMana < playerCost) {
         return {
             result: 'insufficient_mana',
             damage: 0,
             computerMove: null,
             computerElement: null,
-            elementalMessage: 'Not enough mana!',
+            elementalMessage: `Need ${playerCost} mana, you have ${playerMana}.`,
             comboMessage: ''
         };
     }
 
-    // Deduct mana
-    playerMana -= cost;
+    // Deduct player mana
+    playerMana -= playerCost;
 
-    // Generate computer choices
+    // Computer chooses move and element
     computerMove = getRandomMove();
-    computerElement = getRandomElement();
+    const chosenElement = getComputerElementWithMana();
+    let computerCost = 0;
+    if (chosenElement) {
+        computerElement = chosenElement;
+        computerCost = elementCosts[computerElement];
+        computerMana -= computerCost;
+    } else {
+        computerElement = null;
+    }
 
-    // Determine RPS winner
     const rpsWinner = getRPSWinner(playerMove, computerMove);
+    let damage = calculateBaseDamage(rpsWinner, playerElement, computerElement);
 
-    // Calculate base damage
-    const baseDamage = calculateBaseDamage(rpsWinner, playerElement, computerElement);
-
-    // Check for combo
+    // Combo check (based on previous player element)
     const combo = checkCombo(lastPlayerElement, playerElement);
-    let damage = baseDamage;
     let comboMessage = '';
     let manaRefund = 0;
     let selfHeal = 0;
@@ -208,30 +188,32 @@ function resolveRound() {
         }
     } else if (rpsWinner === 'computer') {
         playerHP = Math.max(0, playerHP - damage);
-        // Computer doesn't get combo benefits
     }
 
-    // Refund mana if applicable
+    // Refund mana if combo
     if (manaRefund > 0) {
         playerMana = Math.min(maxMana, playerMana + manaRefund);
     }
 
-    // Regenerate mana after round (always)
+    // Regenerate mana for both
     playerMana = Math.min(maxMana, playerMana + manaRegen);
+    computerMana = Math.min(maxMana, computerMana + manaRegen);
 
-    // Update last element for next combo
+    // Store last element for next combo
     lastPlayerElement = playerElement;
 
-    // Check for game over
+    // Check win
     if (computerHP === 0) {
         playerWins++;
-        // Storage update will be handled in main.js
+        if (typeof window.incrementPlayerWins === 'function') {
+            window.incrementPlayerWins();
+        }
     }
 
-    // Build elemental message
+    // Build elemental feedback message
     let elementalMessage = '';
     if (rpsWinner === 'player') {
-        elementalMessage = `Your ${playerElement} vs ${computerElement}: `;
+        elementalMessage = `Your ${playerElement} vs ${computerElement ? computerElement : 'no element'}: `;
         const mult = getElementMultiplier(playerElement, computerElement);
         if (mult >= 2) elementalMessage += 'Super effective!';
         else if (mult >= 1.5) elementalMessage += 'Strong!';
@@ -239,7 +221,7 @@ function resolveRound() {
         else if (mult <= 0.5) elementalMessage += 'Weak...';
         else elementalMessage += 'Neutral.';
     } else if (rpsWinner === 'computer') {
-        elementalMessage = `Enemy ${computerElement} vs your ${playerElement}: `;
+        elementalMessage = `Enemy ${computerElement ? computerElement : 'no element'} vs your ${playerElement}: `;
         const mult = getElementMultiplier(computerElement, playerElement);
         if (mult >= 2) elementalMessage += 'Super effective against you!';
         else if (mult >= 1.5) elementalMessage += 'Strong against you!';
@@ -250,7 +232,6 @@ function resolveRound() {
         elementalMessage = 'Tie! No damage.';
     }
 
-    // Return result object
     return {
         result: rpsWinner,
         damage: damage,
@@ -258,80 +239,44 @@ function resolveRound() {
         computerElement: computerElement,
         elementalMessage: elementalMessage,
         comboMessage: comboMessage,
-        manaCost: cost,
-        manaAfter: playerMana,
+        playerManaAfter: playerMana,
+        computerManaAfter: computerMana,
         playerHP: playerHP,
         computerHP: computerHP
     };
 }
 
-/**
- * Reset the game (new game)
- */
 function resetGame() {
     playerHP = 30;
     computerHP = 30;
     playerMana = 20;
+    computerMana = 20;
     playerMove = null;
     playerElement = null;
     computerMove = null;
     computerElement = null;
     lastPlayerElement = null;
-    // Note: playerWins persists across resets (accumulate)
 }
 
-/**
- * Reset wins (e.g., when user logs out or manually)
- */
 function resetWins() {
     playerWins = 0;
 }
 
-// ===== Getter / Setter Functions =====
+// Getters / Setters
+function setPlayerMove(move) { playerMove = move; }
+function setPlayerElement(element) { playerElement = element; }
+function getPlayerHP() { return playerHP; }
+function getComputerHP() { return computerHP; }
+function getPlayerMana() { return playerMana; }
+function getComputerMana() { return computerMana; }
+function getMaxMana() { return maxMana; }
+function getElementCost(element) { return elementCosts[element] || 0; }
+function hasEnoughMana(element) { return playerMana >= elementCosts[element]; }
+function getPlayerWins() { return playerWins; }
+function isGameOver() { return playerHP === 0 || computerHP === 0; }
+function getLastPlayerElement() { return lastPlayerElement; }
 
-function setPlayerMove(move) {
-    playerMove = move;
-}
-
-function setPlayerElement(element) {
-    // Only set if enough mana? But we'll check in main.js before enabling Begin Round.
-    // However we still set it, and resolveRound will check mana.
-    playerElement = element;
-}
-
-function getPlayerHP() {
-    return playerHP;
-}
-
-function getComputerHP() {
-    return computerHP;
-}
-
-function getPlayerMana() {
-    return playerMana;
-}
-
-function getMaxMana() {
-    return maxMana;
-}
-
-function getElementCost(element) {
-    return elementCosts[element] || 0;
-}
-
-function hasEnoughMana(element) {
-    return playerMana >= elementCosts[element];
-}
-
-function getPlayerWins() {
-    return playerWins;
-}
-
-function isGameOver() {
-    return playerHP === 0 || computerHP === 0;
-}
-
-// Expose functions globally
+// Expose globally
 window.setPlayerMove = setPlayerMove;
 window.setPlayerElement = setPlayerElement;
 window.resolveRound = resolveRound;
@@ -339,9 +284,11 @@ window.resetGame = resetGame;
 window.getPlayerHP = getPlayerHP;
 window.getComputerHP = getComputerHP;
 window.getPlayerMana = getPlayerMana;
+window.getComputerMana = getComputerMana;
 window.getMaxMana = getMaxMana;
 window.getElementCost = getElementCost;
 window.hasEnoughMana = hasEnoughMana;
 window.isGameOver = isGameOver;
 window.getPlayerWins = getPlayerWins;
 window.resetWins = resetWins;
+window.getLastPlayerElement = getLastPlayerElement;

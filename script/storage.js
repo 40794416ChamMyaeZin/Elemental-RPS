@@ -3,18 +3,14 @@
 
 // ===== Keys =====
 const STORAGE_KEYS = {
-    USERS: 'elementalRPS_users',           // Store multiple users with passwords
+    USERS: 'elementalRPS_users',
     CURRENT_USER: 'elementalRPS_current_user',
     REMEMBER_ME: 'elementalRPS_remember',
     TERMS_ACCEPTED: 'elementalRPS_terms_accepted'
 };
 
-// ===== User Management with Passwords =====
+// ===== User Management =====
 
-/**
- * Get all users from storage
- * @returns {Object} Users object { username: { password: string, wins: number, created: string, lastLogin: string, termsAccepted: boolean } }
- */
 function getUsers() {
     const stored = localStorage.getItem(STORAGE_KEYS.USERS);
     if (stored) {
@@ -28,38 +24,22 @@ function getUsers() {
     return {};
 }
 
-/**
- * Save users to storage
- * @param {Object} users - Users object to save
- */
 function saveUsers(users) {
     localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
 }
 
-/**
- * Simple hash function for demo purposes
- * NOTE: This is NOT secure for production! Use proper hashing (bcrypt) with a backend.
- * @param {string} str - String to hash
- * @returns {string} Hashed string
- */
+// Simple hash for demo (not secure, but sufficient for this assignment)
 function simpleHash(str) {
     if (!str) return '';
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash;
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0; // Convert to 32-bit integer
     }
     const salt = 'elemRPS';
     return Math.abs(hash).toString(16) + salt;
 }
 
-/**
- * Register a new user
- * @param {string} username - Desired username
- * @param {string} password - Desired password
- * @returns {Object} Result { success: boolean, message: string }
- */
 function registerUser(username, password) {
     if (!username || !username.trim()) {
         return { success: false, message: 'Username is required!' };
@@ -87,13 +67,6 @@ function registerUser(username, password) {
     return { success: true, message: 'Registration successful!' };
 }
 
-/**
- * Login user with username and password
- * @param {string} username - Username
- * @param {string} password - Password
- * @param {boolean} remember - Whether to remember user
- * @returns {Object} Result { success: boolean, message: string, wins: number }
- */
 function loginUser(username, password, remember = true) {
     if (!username || !username.trim()) {
         return { success: false, message: 'Please enter your username!' };
@@ -105,7 +78,7 @@ function loginUser(username, password, remember = true) {
     const cleanUsername = username.trim();
     const user = users[cleanUsername];
 
-    // Demo mode: any password "demo123" works or creates user
+    // Demo mode: any password "demo123" works (auto‑creates user if needed)
     if (password === 'demo123') {
         if (!user) {
             users[cleanUsername] = {
@@ -147,25 +120,14 @@ function loginUser(username, password, remember = true) {
     };
 }
 
-/**
- * Logout current user
- */
 function logoutUser() {
     localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
 }
 
-/**
- * Get current logged in user
- * @returns {string} Username or empty string
- */
 function getCurrentUser() {
     return localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || '';
 }
 
-/**
- * Set current user
- * @param {string} username - Username to set as current
- */
 function setCurrentUser(username) {
     if (username) {
         localStorage.setItem(STORAGE_KEYS.CURRENT_USER, username);
@@ -174,21 +136,11 @@ function setCurrentUser(username) {
     }
 }
 
-/**
- * Check if user exists
- * @param {string} username - Username to check
- * @returns {boolean} True if user exists
- */
 function userExists(username) {
     const users = getUsers();
     return !!users[username];
 }
 
-/**
- * Get user data
- * @param {string} username - Username
- * @returns {Object|null} User data or null
- */
 function getUserData(username) {
     const users = getUsers();
     return users[username] || null;
@@ -198,6 +150,7 @@ function getUserData(username) {
 function setRememberMe(remember) {
     localStorage.setItem(STORAGE_KEYS.REMEMBER_ME, remember ? 'true' : 'false');
 }
+
 function getRememberMe() {
     return localStorage.getItem(STORAGE_KEYS.REMEMBER_ME) === 'true';
 }
@@ -210,7 +163,9 @@ function incrementPlayerWins() {
     if (users[username]) {
         users[username].wins = (users[username].wins || 0) + 1;
         saveUsers(users);
-        if (typeof window.updateLeaderboardUI === 'function') window.updateLeaderboardUI();
+        if (typeof window.updateLeaderboardUI === 'function') {
+            window.updateLeaderboardUI();
+        }
         return users[username].wins;
     }
     return 0;
@@ -282,7 +237,7 @@ function hasAcceptedTerms(username) {
     return users[username]?.termsAccepted || false;
 }
 
-// ===== Session =====
+// ===== Session Info =====
 function isLoggedIn() {
     return !!getCurrentUser();
 }
@@ -314,11 +269,15 @@ function clearAllStorage() {
     }
 }
 
-// ===== Legacy exports =====
+// ===== Legacy exports (backward compatibility) =====
 window.getUsername = getCurrentUser;
 window.setUsername = setCurrentUser;
+window.updateLeaderboard = function(name, wins) {
+    // Legacy – no longer used, but kept to avoid breaking old code
+    console.log('updateLeaderboard called (legacy)');
+};
 
-// ===== Expose new functions globally =====
+// ===== Expose all new functions globally =====
 window.getUsers = getUsers;
 window.registerUser = registerUser;
 window.loginUser = loginUser;
@@ -340,7 +299,7 @@ window.clearAllStorage = clearAllStorage;
 window.setRememberMe = setRememberMe;
 window.getRememberMe = getRememberMe;
 
-// Initialise demo user
+// ===== Initialise demo user if no users exist =====
 (function initDemoUser() {
     const users = getUsers();
     if (Object.keys(users).length === 0) {

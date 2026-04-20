@@ -11,279 +11,287 @@
     <link rel="stylesheet" href="style/themes.css">
 </head>
 <body>
-    <!-- LOGIN SECTION (visible by default) -->
-    <section id="login-section" class="section active">
-        <div class="login-container">
-            <h1>⚡ Elemental RPS ⚡</h1>
-            <p>Enter your credentials to begin the clash!</p>
-            
-            <div class="input-group">
-                <label for="username-input"><i class="fas fa-user"></i> Username:</label>
-                <input type="text" id="username-input" placeholder="Enter your username" maxlength="20" autocomplete="username">
+<!-- LOGIN SECTION (visible by default) -->
+<section id="login-section" class="section active">
+    <div class="login-container">
+        <h1>⚡ Elemental RPS ⚡</h1>
+        <p>Enter your credentials to begin the clash!</p>
+
+        <div class="input-group">
+            <label for="username-input"><i class="fas fa-user"></i> Username:</label>
+            <input type="text" id="username-input" placeholder="Enter your username" maxlength="20" autocomplete="username">
+        </div>
+
+        <div class="input-group">
+            <label for="password-input"><i class="fas fa-lock"></i> Password:</label>
+            <input type="password" id="password-input" placeholder="Enter your password" autocomplete="current-password">
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="remember-me" checked>
+            <label for="remember-me">Remember me</label>
+        </div>
+
+        <button id="login-btn" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Enter the Arena</button>
+
+        <div class="login-links">
+            <a href="#" id="register-link"><i class="fas fa-user-plus"></i> Register</a>
+            <a href="#" id="forgot-password-link"><i class="fas fa-question-circle"></i> Forgot password?</a>
+            <a href="#" id="terms-link"><i class="fas fa-file-contract"></i> Terms</a>
+        </div>
+
+        <div class="demo-credentials">
+            <p><i class="fas fa-info-circle"></i> Demo: Use any username / password "demo123"</p>
+        </div>
+    </div>
+</section>
+
+<!-- REGISTRATION MODAL -->
+<div id="register-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2><i class="fas fa-user-plus"></i> Create Account</h2>
+
+        <div class="input-group">
+            <label for="reg-username"><i class="fas fa-user"></i> Username:</label>
+            <input type="text" id="reg-username" placeholder="Choose a username" maxlength="20" autocomplete="off">
+        </div>
+
+        <div class="input-group">
+            <label for="reg-password"><i class="fas fa-lock"></i> Password:</label>
+            <input type="password" id="reg-password" placeholder="Choose a password (min. 4 characters)">
+            <!-- Password strength indicator -->
+            <div class="password-strength">
+                <div class="password-strength-bar" id="password-strength-bar"></div>
             </div>
-            
-            <div class="input-group">
-                <label for="password-input"><i class="fas fa-lock"></i> Password:</label>
-                <input type="password" id="password-input" placeholder="Enter your password" autocomplete="current-password">
+            <span class="password-strength-text" id="password-strength-text">Enter password</span>
+        </div>
+
+        <div class="input-group">
+            <label for="reg-confirm-password"><i class="fas fa-lock"></i> Confirm Password:</label>
+            <input type="password" id="reg-confirm-password" placeholder="Re-enter password">
+            <span class="error-message" id="password-match-error"></span>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="reg-terms" checked>
+            <label for="reg-terms">I agree to the <a href="#" id="terms-link-reg">Terms of Service</a></label>
+        </div>
+
+        <button id="register-btn" class="btn btn-primary"><i class="fas fa-check-circle"></i> Register</button>
+        <button id="cancel-register-btn" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</button>
+
+        <div class="modal-footer">
+            <p>Already have an account? <a href="#" id="login-from-register">Login here</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div id="forgot-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2><i class="fas fa-question-circle"></i> Reset Password</h2>
+
+        <div class="info-message">
+            <i class="fas fa-info-circle"></i> For demo purposes, your password will be reset to "demo123"
+        </div>
+
+        <div class="input-group">
+            <label for="reset-username"><i class="fas fa-user"></i> Username:</label>
+            <input type="text" id="reset-username" placeholder="Enter your username" autocomplete="off">
+        </div>
+
+        <button id="reset-password-btn" class="btn btn-primary"><i class="fas fa-redo-alt"></i> Reset Password</button>
+        <button id="cancel-reset-btn" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</button>
+
+        <div class="modal-footer">
+            <p>Remember your password? <a href="#" id="login-from-reset">Login</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- TERMS OF SERVICE MODAL -->
+<div id="terms-modal" class="modal">
+    <div class="modal-content terms-content">
+        <span class="close-modal">&times;</span>
+        <h2><i class="fas fa-file-contract"></i> Terms of Service</h2>
+
+        <div class="terms-text">
+            <h3>Elemental RPS - Terms of Service</h3>
+            <p>Last updated: 2026</p>
+
+            <h4>1. Acceptance of Terms</h4>
+            <p>By accessing and playing Elemental RPS, you agree to be bound by these Terms of Service.</p>
+
+            <h4>2. Game Rules</h4>
+            <p>Players must choose both a move (Rock, Paper, Scissors) and an element (Fire, Water, Earth, Air, Lightning, Ice). The game follows standard RPS rules with elemental modifiers and mana costs.</p>
+
+            <h4>3. Fair Play</h4>
+            <p>Players are expected to play fairly. Cheating, exploiting bugs, or using automated scripts is prohibited.</p>
+
+            <h4>4. Account Responsibility</h4>
+            <p>You are responsible for maintaining the confidentiality of your account credentials.</p>
+
+            <h4>5. Data Collection</h4>
+            <p>We store your username, win count, and preferences locally in your browser for leaderboard and personalization purposes.</p>
+
+            <h4>6. Modifications</h4>
+            <p>We reserve the right to modify or discontinue the game at any time.</p>
+
+            <h4>7. Limitation of Liability</h4>
+            <p>Elemental RPS is provided "as is" without warranties of any kind.</p>
+        </div>
+
+        <button id="accept-terms-btn" class="btn btn-primary"><i class="fas fa-check"></i> I Accept</button>
+    </div>
+</div>
+
+<!-- GAME OVER POPUP (hidden initially) -->
+<div id="gameover-popup" class="popup hidden">
+    <div class="popup-content">
+        <h3>Game Over!</h3>
+        <p id="gameover-message">Would you like to continue?</p>
+        <div class="popup-buttons">
+            <button id="gameover-yes" class="btn btn-primary"><i class="fas fa-check"></i> Yes</button>
+            <button id="gameover-no" class="btn btn-secondary"><i class="fas fa-times"></i> No</button>
+        </div>
+    </div>
+</div>
+
+<!-- GAME SECTION (hidden initially) -->
+<section id="game-section" class="section">
+    <!-- Header with user greeting, theme toggle, and logout -->
+    <header class="game-header">
+        <h2>⚡ Elemental RPS</h2>
+        <div class="user-info">
+            <span id="greeting">Welcome, <span id="display-username"></span>!</span>
+            <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
+            <button id="logout-btn" class="btn btn-small" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </header>
+
+    <!-- Main game area -->
+    <div class="game-area">
+        <!-- HP and Mana Bars -->
+        <div class="stats-container">
+            <div class="hp-player">
+                <span class="hp-label"><i class="fas fa-user"></i> Player</span>
+                <div class="hp-bar-bg">
+                    <div id="player-hp-bar" class="hp-bar-fill" style="width: 100%;"></div>
+                </div>
+                <span id="player-hp-text">30/30</span>
             </div>
-            
-            <div class="checkbox-group">
-                <input type="checkbox" id="remember-me" checked>
-                <label for="remember-me">Remember me</label>
+            <div class="mana-container">
+                <span class="mana-label"><i class="fas fa-bolt"></i> Mana</span>
+                <div class="mana-bar-bg">
+                    <div id="player-mana-bar" class="mana-bar-fill" style="width: 100%;"></div>
+                </div>
+                <span id="player-mana-text">20/20</span>
             </div>
-            
-            <button id="login-btn" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Enter the Arena</button>
-            
-            <div class="login-links">
-                <a href="#" id="register-link"><i class="fas fa-user-plus"></i> Register</a>
-                <a href="#" id="forgot-password-link"><i class="fas fa-question-circle"></i> Forgot password?</a>
-                <a href="#" id="terms-link"><i class="fas fa-file-contract"></i> Terms</a>
+            <div class="hp-computer">
+                <span class="hp-label"><i class="fas fa-robot"></i> Computer</span>
+                <div class="hp-bar-bg">
+                    <div id="computer-hp-bar" class="hp-bar-fill" style="width: 100%;"></div>
+                </div>
+                <span id="computer-hp-text">30/30</span>
             </div>
-            
-            <div class="demo-credentials">
-                <p><i class="fas fa-info-circle"></i> Demo: Use any username / password "demo123"</p>
+            <!-- ADDED: Computer Mana Bar -->
+            <div class="mana-container computer-mana">
+                <span class="mana-label"><i class="fas fa-bolt"></i> Computer Mana</span>
+                <div class="mana-bar-bg">
+                    <div id="computer-mana-bar" class="mana-bar-fill" style="width: 100%;"></div>
+                </div>
+                <span id="computer-mana-text">20/20</span>
             </div>
         </div>
-    </section>
 
-    <!-- REGISTRATION MODAL -->
-    <div id="register-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2><i class="fas fa-user-plus"></i> Create Account</h2>
-            
-            <div class="input-group">
-                <label for="reg-username"><i class="fas fa-user"></i> Username:</label>
-                <input type="text" id="reg-username" placeholder="Choose a username" maxlength="20" autocomplete="off">
+        <!-- Move Selection (RPS) -->
+        <div class="selection-panel">
+            <h3><i class="fas fa-fist-raised"></i> Choose your move:</h3>
+            <div class="button-group">
+                <button class="btn move-btn" data-move="rock"><i class="fas fa-hand-rock"></i> Rock</button>
+                <button class="btn move-btn" data-move="paper"><i class="fas fa-hand-paper"></i> Paper</button>
+                <button class="btn move-btn" data-move="scissors"><i class="fas fa-hand-scissors"></i> Scissors</button>
             </div>
-            
-            <div class="input-group">
-                <label for="reg-password"><i class="fas fa-lock"></i> Password:</label>
-                <input type="password" id="reg-password" placeholder="Choose a password (min. 4 characters)">
-                <!-- Password strength indicator -->
-                <div class="password-strength">
-                    <div class="password-strength-bar" id="password-strength-bar"></div>
+        </div>
+
+        <!-- Element Selection (6 elements) -->
+        <div class="selection-panel">
+            <h3><i class="fas fa-magic"></i> Choose your element (cost):</h3>
+            <div class="button-group element-group">
+                <button class="btn element-btn" data-element="fire" data-cost="3"><i class="fas fa-fire"></i> Fire (3)</button>
+                <button class="btn element-btn" data-element="water" data-cost="2"><i class="fas fa-water"></i> Water (2)</button>
+                <button class="btn element-btn" data-element="earth" data-cost="4"><i class="fas fa-mountain"></i> Earth (4)</button>
+                <button class="btn element-btn" data-element="air" data-cost="2"><i class="fas fa-wind"></i> Air (2)</button>
+                <button class="btn element-btn" data-element="lightning" data-cost="5"><i class="fas fa-bolt"></i> Lightning (5)</button>
+                <button class="btn element-btn" data-element="ice" data-cost="3"><i class="fas fa-snowflake"></i> Ice (3)</button>
+            </div>
+        </div>
+
+        <!-- Begin Round Button -->
+        <div class="round-control">
+            <button id="begin-round-btn" class="btn btn-primary" disabled><i class="fas fa-play"></i> Begin Round</button>
+        </div>
+
+        <!-- Clash Result Area (animated) -->
+        <div id="clash-area" class="clash-area">
+            <div class="clash-icons" id="clash-icons">
+                <!-- Dynamically filled by JS -->
+                <span class="player-clash"></span>
+                <span class="vs">VS</span>
+                <span class="computer-clash"></span>
+            </div>
+            <div id="clash-message" class="clash-message">Make your choices!</div>
+            <div id="damage-message" class="damage-message"></div>
+            <div id="elemental-message" class="elemental-message"></div>
+        </div>
+
+        <!-- Reset Button -->
+        <div class="reset-area">
+            <button id="reset-btn" class="btn btn-secondary"><i class="fas fa-redo-alt"></i> Reset Game</button>
+        </div>
+
+        <!-- Collapsible Element Guide -->
+        <div class="info-panel">
+            <div class="leaderboard">
+                <h3>🏆 Leaderboard</h3>
+                <ul id="leaderboard-list">
+                    <li>1. </li>
+                    <li>2. </li>
+                    <li>3. </li>
+                    <li>4. </li>
+                    <li>5. </li>
+                </ul>
+            </div>
+            <div class="element-guide">
+                <button id="toggle-guide-btn" class="btn btn-small"><i class="fas fa-chevron-down"></i> Show Element Guide</button>
+                <div id="element-guide-content" class="guide-content hidden">
+                    <h4><i class="fas fa-info-circle"></i> Element Strengths & Costs</h4>
+                    <div class="reference-grid">
+                        <div class="ref-item"><span class="element-icon fire">🔥</span> Fire (3) → <span class="element-icon air">🌪️</span> Air, <span class="element-icon ice">❄️</span> Ice</div>
+                        <div class="ref-item"><span class="element-icon water">💧</span> Water (2) → <span class="element-icon fire">🔥</span> Fire</div>
+                        <div class="ref-item"><span class="element-icon earth">🌍</span> Earth (4) → <span class="element-icon water">💧</span> Water</div>
+                        <div class="ref-item"><span class="element-icon air">🌪️</span> Air (2) → <span class="element-icon earth">🌍</span> Earth</div>
+                        <div class="ref-item"><span class="element-icon lightning">⚡</span> Lightning (5) → <span class="element-icon water">💧</span> Water, <span class="element-icon air">🌪️</span> Air</div>
+                        <div class="ref-item"><span class="element-icon ice">❄️</span> Ice (3) → <span class="element-icon earth">🌍</span> Earth, <span class="element-icon water">💧</span> Water</div>
+                    </div>
+                    <p class="reference-note"><i class="fas fa-star"></i> Some combinations have special combo effects!</p>
                 </div>
-                <span class="password-strength-text" id="password-strength-text">Enter password</span>
-            </div>
-            
-            <div class="input-group">
-                <label for="reg-confirm-password"><i class="fas fa-lock"></i> Confirm Password:</label>
-                <input type="password" id="reg-confirm-password" placeholder="Re-enter password">
-                <span class="error-message" id="password-match-error"></span>
-            </div>
-            
-            <div class="checkbox-group">
-                <input type="checkbox" id="reg-terms" checked>
-                <label for="reg-terms">I agree to the <a href="#" id="terms-link-reg">Terms of Service</a></label>
-            </div>
-            
-            <button id="register-btn" class="btn btn-primary"><i class="fas fa-check-circle"></i> Register</button>
-            <button id="cancel-register-btn" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</button>
-            
-            <div class="modal-footer">
-                <p>Already have an account? <a href="#" id="login-from-register">Login here</a></p>
             </div>
         </div>
     </div>
+</section>
 
-    <!-- FORGOT PASSWORD MODAL -->
-    <div id="forgot-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2><i class="fas fa-question-circle"></i> Reset Password</h2>
-            
-            <div class="info-message">
-                <i class="fas fa-info-circle"></i> For demo purposes, your password will be reset to "demo123"
-            </div>
-            
-            <div class="input-group">
-                <label for="reset-username"><i class="fas fa-user"></i> Username:</label>
-                <input type="text" id="reset-username" placeholder="Enter your username" autocomplete="off">
-            </div>
-            
-            <button id="reset-password-btn" class="btn btn-primary"><i class="fas fa-redo-alt"></i> Reset Password</button>
-            <button id="cancel-reset-btn" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</button>
-            
-            <div class="modal-footer">
-                <p>Remember your password? <a href="#" id="login-from-reset">Login</a></p>
-            </div>
-        </div>
-    </div>
+<!-- Footer (common) -->
+<footer>
+    <p>© 2026 Elemental RPS – Master the six elements!</p>
+</footer>
 
-    <!-- TERMS OF SERVICE MODAL -->
-    <div id="terms-modal" class="modal">
-        <div class="modal-content terms-content">
-            <span class="close-modal">&times;</span>
-            <h2><i class="fas fa-file-contract"></i> Terms of Service</h2>
-            
-            <div class="terms-text">
-                <h3>Elemental RPS - Terms of Service</h3>
-                <p>Last updated: 2026</p>
-                
-                <h4>1. Acceptance of Terms</h4>
-                <p>By accessing and playing Elemental RPS, you agree to be bound by these Terms of Service.</p>
-                
-                <h4>2. Game Rules</h4>
-                <p>Players must choose both a move (Rock, Paper, Scissors) and an element (Fire, Water, Earth, Air, Lightning, Ice). The game follows standard RPS rules with elemental modifiers and mana costs.</p>
-                
-                <h4>3. Fair Play</h4>
-                <p>Players are expected to play fairly. Cheating, exploiting bugs, or using automated scripts is prohibited.</p>
-                
-                <h4>4. Account Responsibility</h4>
-                <p>You are responsible for maintaining the confidentiality of your account credentials.</p>
-                
-                <h4>5. Data Collection</h4>
-                <p>We store your username, win count, and preferences locally in your browser for leaderboard and personalization purposes.</p>
-                
-                <h4>6. Modifications</h4>
-                <p>We reserve the right to modify or discontinue the game at any time.</p>
-                
-                <h4>7. Limitation of Liability</h4>
-                <p>Elemental RPS is provided "as is" without warranties of any kind.</p>
-            </div>
-            
-            <button id="accept-terms-btn" class="btn btn-primary"><i class="fas fa-check"></i> I Accept</button>
-        </div>
-    </div>
-
-    <!-- GAME OVER POPUP (hidden initially) -->
-    <div id="gameover-popup" class="popup hidden">
-        <div class="popup-content">
-            <h3>Game Over!</h3>
-            <p id="gameover-message">Would you like to continue?</p>
-            <div class="popup-buttons">
-                <button id="gameover-yes" class="btn btn-primary"><i class="fas fa-check"></i> Yes</button>
-                <button id="gameover-no" class="btn btn-secondary"><i class="fas fa-times"></i> No</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- GAME SECTION (hidden initially) -->
-    <section id="game-section" class="section">
-        <!-- Header with user greeting, theme toggle, and logout -->
-        <header class="game-header">
-            <h2>⚡ Elemental RPS</h2>
-            <div class="user-info">
-                <span id="greeting">Welcome, <span id="display-username"></span>!</span>
-                <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
-                <button id="logout-btn" class="btn btn-small" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
-            </div>
-        </header>
-
-        <!-- Main game area -->
-        <div class="game-area">
-            <!-- HP and Mana Bars -->
-            <div class="stats-container">
-                <div class="hp-player">
-                    <span class="hp-label"><i class="fas fa-user"></i> Player</span>
-                    <div class="hp-bar-bg">
-                        <div id="player-hp-bar" class="hp-bar-fill" style="width: 100%;"></div>
-                    </div>
-                    <span id="player-hp-text">30/30</span>
-                </div>
-                <div class="mana-container">
-                    <span class="mana-label"><i class="fas fa-bolt"></i> Mana</span>
-                    <div class="mana-bar-bg">
-                        <div id="player-mana-bar" class="mana-bar-fill" style="width: 100%;"></div>
-                    </div>
-                    <span id="player-mana-text">20/20</span>
-                </div>
-                <div class="hp-computer">
-                    <span class="hp-label"><i class="fas fa-robot"></i> Computer</span>
-                    <div class="hp-bar-bg">
-                        <div id="computer-hp-bar" class="hp-bar-fill" style="width: 100%;"></div>
-                    </div>
-                    <span id="computer-hp-text">30/30</span>
-                </div>
-            </div>
-
-            <!-- Move Selection (RPS) -->
-            <div class="selection-panel">
-                <h3><i class="fas fa-fist-raised"></i> Choose your move:</h3>
-                <div class="button-group">
-                    <button class="btn move-btn" data-move="rock"><i class="fas fa-hand-rock"></i> Rock</button>
-                    <button class="btn move-btn" data-move="paper"><i class="fas fa-hand-paper"></i> Paper</button>
-                    <button class="btn move-btn" data-move="scissors"><i class="fas fa-hand-scissors"></i> Scissors</button>
-                </div>
-            </div>
-
-            <!-- Element Selection (6 elements) -->
-            <div class="selection-panel">
-                <h3><i class="fas fa-magic"></i> Choose your element (cost):</h3>
-                <div class="button-group element-group">
-                    <button class="btn element-btn" data-element="fire" data-cost="3"><i class="fas fa-fire"></i> Fire (3)</button>
-                    <button class="btn element-btn" data-element="water" data-cost="2"><i class="fas fa-water"></i> Water (2)</button>
-                    <button class="btn element-btn" data-element="earth" data-cost="4"><i class="fas fa-mountain"></i> Earth (4)</button>
-                    <button class="btn element-btn" data-element="air" data-cost="2"><i class="fas fa-wind"></i> Air (2)</button>
-                    <button class="btn element-btn" data-element="lightning" data-cost="5"><i class="fas fa-bolt"></i> Lightning (5)</button>
-                    <button class="btn element-btn" data-element="ice" data-cost="3"><i class="fas fa-snowflake"></i> Ice (3)</button>
-                </div>
-            </div>
-
-            <!-- Begin Round Button -->
-            <div class="round-control">
-                <button id="begin-round-btn" class="btn btn-primary" disabled><i class="fas fa-play"></i> Begin Round</button>
-            </div>
-
-            <!-- Clash Result Area (animated) -->
-            <div id="clash-area" class="clash-area">
-                <div class="clash-icons" id="clash-icons">
-                    <!-- Dynamically filled by JS -->
-                    <span class="player-clash"></span>
-                    <span class="vs">VS</span>
-                    <span class="computer-clash"></span>
-                </div>
-                <div id="clash-message" class="clash-message">Make your choices!</div>
-                <div id="damage-message" class="damage-message"></div>
-                <div id="elemental-message" class="elemental-message"></div>
-            </div>
-
-            <!-- Reset Button -->
-            <div class="reset-area">
-                <button id="reset-btn" class="btn btn-secondary"><i class="fas fa-redo-alt"></i> Reset Game</button>
-            </div>
-
-            <!-- Collapsible Element Guide -->
-            <div class="info-panel">
-                <div class="leaderboard">
-                    <h3>🏆 Leaderboard</h3>
-                    <ul id="leaderboard-list">
-                        <li>1. </li>
-                        <li>2. </li>
-                        <li>3. </li>
-                        <li>4. </li>
-                        <li>5. </li>
-                    </ul>
-                </div>
-                <div class="element-guide">
-                    <button id="toggle-guide-btn" class="btn btn-small"><i class="fas fa-chevron-down"></i> Show Element Guide</button>
-                    <div id="element-guide-content" class="guide-content hidden">
-                        <h4><i class="fas fa-info-circle"></i> Element Strengths & Costs</h4>
-                        <div class="reference-grid">
-                            <div class="ref-item"><span class="element-icon fire">🔥</span> Fire (3) → <span class="element-icon air">🌪️</span> Air, <span class="element-icon ice">❄️</span> Ice</div>
-                            <div class="ref-item"><span class="element-icon water">💧</span> Water (2) → <span class="element-icon fire">🔥</span> Fire</div>
-                            <div class="ref-item"><span class="element-icon earth">🌍</span> Earth (4) → <span class="element-icon water">💧</span> Water</div>
-                            <div class="ref-item"><span class="element-icon air">🌪️</span> Air (2) → <span class="element-icon earth">🌍</span> Earth</div>
-                            <div class="ref-item"><span class="element-icon lightning">⚡</span> Lightning (5) → <span class="element-icon water">💧</span> Water, <span class="element-icon air">🌪️</span> Air</div>
-                            <div class="ref-item"><span class="element-icon ice">❄️</span> Ice (3) → <span class="element-icon earth">🌍</span> Earth, <span class="element-icon water">💧</span> Water</div>
-                        </div>
-                        <p class="reference-note"><i class="fas fa-star"></i> Some combinations have special combo effects!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer (common) -->
-    <footer>
-        <p>© 2026 Elemental RPS – Master the six elements!</p>
-    </footer>
-
-    <!-- JavaScript files -->
-    <script src="script/storage.js"></script>
-    <script src="script/game.js"></script>
-    <script src="script/ui.js"></script>
-    <script src="script/main.js"></script>
+<!-- JavaScript files -->
+<script src="script/storage.js"></script>
+<script src="script/game.js"></script>
+<script src="script/ui.js"></script>
+<script src="script/main.js"></script>
 </body>
 </html>
